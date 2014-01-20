@@ -4,13 +4,28 @@ require "active_support/core_ext"
 
 class NumberCross
   attr_accessor :x, :y, :answer_length, :answer_numbers
-
   def initialize
     @x = nil
     @y = nil
     @answer_length = nil
     @answer_numbers = []
     @numbers = {}
+  end
+
+  def to_s
+    lines = hr
+    @y.times do
+      lines += hr(true)
+    end
+    lines += hr
+  end
+
+  def hr(normal=false)
+    if normal
+      "|" + Array.new(@x).inject(""){|r,i| r+="  |"} + "\n"
+    else
+      "+" + Array.new(@x).inject(""){|r,i| r+="--+"} + "\n"
+    end
   end
 
   def []= n, s
@@ -26,4 +41,6 @@ class NumberCross
       end
   }.join("|")
   end
+
+  private :hr
 end

@@ -3,8 +3,25 @@ require "spec_helper"
 require "numcro"
 
 describe "ナンクロ" do
+  before do
+    X = 10
+    Y = 3
+  end
+
   before :each do
     @numcro = NumberCross.new
+    @numcro.x = X
+    @numcro.y = Y
+  end
+
+  it "to_sでシートを表示" do
+    expect(@numcro.to_s).to eq <<EOS
++--+--+--+--+--+--+--+--+--+--+
+|  |  |  |  |  |  |  |  |  |  |
+|  |  |  |  |  |  |  |  |  |  |
+|  |  |  |  |  |  |  |  |  |  |
++--+--+--+--+--+--+--+--+--+--+
+EOS
   end
 
   describe "答え" do
