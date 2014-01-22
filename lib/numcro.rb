@@ -9,10 +9,17 @@ class NumberCross
     @y = nil
     @answer_length = nil
     @answer_numbers = []
-    @numbers = {}
+    @numbers = Hash.new(0)
+    @sheet = nil
+  end
+
+  def create_sheet
+    raise RuntimeError, "instanse has zero size." if
+      @x.blank? or @y.blank? or @x.zero? or @y.zero?
   end
 
   def to_s
+    create_sheet
     lines = hr
     @y.times do
       lines += hr(true)
@@ -42,5 +49,9 @@ class NumberCross
   }.join("|")
   end
 
-  private :hr
+  def parse_line(i, string)
+
+  end
+
+  private :hr, :parse_line, :create_sheet
 end
