@@ -19,6 +19,34 @@ describe "ナンクロ" do
       @enumcro = NumberCross.new
     end
 
+    describe "size_zero?" do
+      it "xがnilの場合真を返す" do
+        @enumcro.y = 1
+        expect(@enumcro.send(:size_zero?)).to be_true
+      end
+
+      it "yがnilの場合真を返す" do
+        @enumcro.x = 1
+        expect(@enumcro.send(:size_zero?)).to be_true
+      end
+
+      it "x,yともにnilの場合真を返す" do
+        expect(@enumcro.send(:size_zero?)).to be_true
+      end
+
+      it "xが0の場合真を返す" do
+        @enumcro.x = 0
+        @enumcro.y = 1
+        expect(@enumcro.send(:size_zero?)).to be_true
+      end
+
+      it "yが０の場合真を返す" do
+        @enumcro.y = 0
+        @enumcro.x = 1
+        expect(@enumcro.send(:size_zero?)).to be_true
+      end
+    end
+
     it "サイズ nil でシートは作れない" do
       expect{@enumcro.send(:create_sheet)}
         .to raise_error(RuntimeError)
@@ -42,7 +70,8 @@ describe "ナンクロ" do
     end
   end
 
-  describe "parse" do
+  describe "シート" do
+
     it "一行ずつパース" do
       @numcro.send(:parse_line, "10.1.2.0.4", 0)
       expect(@numcro.send(:hr, 0)).to eq <<EOS

@@ -14,8 +14,7 @@ class NumberCross
   end
 
   def create_sheet
-    raise RuntimeError, "instanse has zero size." if
-      @x.blank? or @y.blank? or @x.zero? or @y.zero?
+    raise RuntimeError, "instanse has zero size." if size_zero?
   end
 
   def to_s
@@ -53,5 +52,9 @@ class NumberCross
 
   end
 
-  private :hr, :parse_line, :create_sheet
+  def size_zero?
+    @x.blank? or @y.blank? or @x.zero? or @y.zero?
+  end
+
+  private :hr, :parse_line, :create_sheet, :size_zero?
 end
