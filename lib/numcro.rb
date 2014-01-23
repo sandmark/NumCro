@@ -72,7 +72,7 @@ class NumberCross
     if y
       "|" + @sheet[y].inject(""){ |r, n|
         if @numbers.has_key?(n)
-          r += "#{sprintf('%02d', @numbers[x])}|}"
+          r += @numbers[n] + "|"
         else
           cell = n.zero? ? "**" : sprintf("%02d", n)
           r += "#{cell}|"

@@ -138,6 +138,17 @@ EOS
         expect(@numbers[1]).to eq "あ"
       end
 
+      it "to_sに反映される" do
+        @numcro.place(14, "あ")
+        expect(@numcro.to_s).to eq <<EOS
++--+--+--+--+--+
+|01|02|03|04|05|
+|06|07|08|09|10|
+|11|12|13|あ|15|
++--+--+--+--+--+
+EOS
+      end
+
       it "数値はparse_lineで入力された範囲内でなければならない" do
         expect{@numcro.place(1, "あ")}.to_not raise_error
         expect{@numcro.place(16,"あ")}.to raise_error(IndexError)
