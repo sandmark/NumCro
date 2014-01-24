@@ -22,6 +22,15 @@ class NumberCross
     end
   end
 
+  def parse_answer(string)
+    numbers = string.split(/\./).map(&:to_i)
+    raise RuntimeError, "answer cannot contain 0." if
+      numbers.include? 0
+    raise RuntimeError, "index size doesn't match." if
+      not numbers.size == @answer_length
+    @answer_numbers = numbers
+  end
+
   def parse(lines)
     lines.split(/\n/).each.with_index{|line,i| parse_line(i, line)}
   end

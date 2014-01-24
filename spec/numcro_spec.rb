@@ -260,6 +260,29 @@ EOS
       @numcro.answer_numbers = [1,2,3,4,5]
     end
 
+    describe "parse_answer" do
+      before :each do
+        @numcro.answer_numbers = nil
+      end
+
+      it "長さと一致しなければ例外を投げる" do
+        expect{@numcro.parse_answer("1.2.3")}
+          .to raise_error(RuntimeError)
+        expect{@numcro.parse_answer("1.2.3.4.5.6")}
+          .to raise_error(RuntimeError)
+      end
+
+      it "0 は入力されない" do
+        expect{@numcro.parse_answer("1.0.2")}.
+          to raise_error(RuntimeError)
+      end
+
+      it "@answer_numbersをセットする" do
+        @numcro.parse_answer("1.2.3.4.5")
+        expect(@numcro.answer_numbers).to eq [1,2,3,4,5]
+      end
+    end
+
     it "整形して表示" do
       expect(@numcro.answer).to eq("01|02|03|04|05")
     end
