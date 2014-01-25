@@ -22,7 +22,7 @@ class NumberCross
     end
   end
 
-  def parse_answer(string)
+  def answer_numbers=(string)
     numbers = string.split(/\./).map(&:to_i)
     raise RuntimeError, "answer cannot contain 0." if
       numbers.include? 0
