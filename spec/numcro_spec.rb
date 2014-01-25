@@ -244,13 +244,7 @@ EOS
 
   describe "to_s" do
     it "シートを表示" do
-      expect(@numcro.to_s).to eq <<EOS
-+--+--+--+--+--+
-|**|**|**|**|**|
-|**|**|**|**|**|
-|**|**|**|**|**|
-+--+--+--+--+--+
-EOS
+      expect(@numcro.to_s).to eq BLANK_SHEET
     end
   end
 
