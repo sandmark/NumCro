@@ -39,20 +39,35 @@ EOS
   end
 
   describe "load" do
+    before :all do
+      YML = "sample.yml"
+      YML_QUESTION = <<EOS
++--+--+--+--+--+
+|01|02|03|04|05|
+|06|07|08|09|10|
+|11|12|13|14|15|
++--+--+--+--+--+
+EOS
+    end
+
     before :each do
       @numcro = NumberCross.new
+      @numcro.load YML
     end
 
     it "サイズを取得する" do
-      expect{@numcro.load("sample.yml")}.to_not raise_error
+      expect{@numcro.load(YML)}.to_not raise_error
       expect(@numcro.x).to eq X
       expect(@numcro.y).to eq Y
     end
 
     it "答えの情報を取得する" do
-      @numcro.load("sample.yml")
       expect(@numcro.answer_length).to eq 5
       expect(@numcro.answer_numbers).to eq [1,2,3,4,5]
+    end
+
+    it "問題を取得する" do
+      expect(@numcro.to_s).to eq YML_QUESTION
     end
   end
 
