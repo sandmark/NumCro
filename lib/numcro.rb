@@ -20,6 +20,8 @@ class NumberCross
     data = HashWithIndifferentAccess.new(YAML.load_file(file))
     @x = data[:size][:x].to_i
     @y = data[:size][:y].to_i
+    @answer_length = data[:answer][:length].to_i
+    self.answer_numbers = data[:answer][:numbers]
   end
 
   def create_sheet(sym=nil)

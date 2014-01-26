@@ -48,6 +48,12 @@ EOS
       expect(@numcro.x).to eq X
       expect(@numcro.y).to eq Y
     end
+
+    it "答えの情報を取得する" do
+      @numcro.load("sample.yml")
+      expect(@numcro.answer_length).to eq 5
+      expect(@numcro.answer_numbers).to eq [1,2,3,4,5]
+    end
   end
 
   describe "integer?" do
