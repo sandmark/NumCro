@@ -1,6 +1,7 @@
 # -*- coding: utf-8 -*-
 require "active_support"
 require "active_support/core_ext"
+require "yaml"
 
 class InvalidFormatError < Exception; end
 
@@ -13,6 +14,15 @@ class NumberCross
     @answer_numbers = []
     @numbers = Hash.new(0)
     @sheet = nil
+  end
+
+  def load(file)
+    data = HashWithIndifferentAccess.new(YAML.load_file(file))
+    self.x = data[:size][:x].to_i
+    self.y = data[:size][:y].to_i
+    self.answer_length = data[:answer][:length].to_i
+    self.answer_numbers = data[:answer][:numbers]
+    parse data[:question]
   end
 
   def create_sheet(sym=nil)
@@ -118,7 +128,7 @@ class NumberCross
 
   def split_indices(string)
     if not string.match(/^[0-9\.]+$/)
-      raise InvalidFormatError, "format contains not numbers or dots."
+      raise InvalidFormatError, "must contain only numbers and dots."
     end
     string.split(/\./).map(&:to_i)
   end
