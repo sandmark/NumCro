@@ -1,6 +1,7 @@
 # -*- coding: utf-8 -*-
 require "active_support"
 require "active_support/core_ext"
+require "yaml"
 
 class InvalidFormatError < Exception; end
 
@@ -13,6 +14,12 @@ class NumberCross
     @answer_numbers = []
     @numbers = Hash.new(0)
     @sheet = nil
+  end
+
+  def load(file)
+    data = HashWithIndifferentAccess.new(YAML.load_file(file))
+    @x = data[:size][:x].to_i
+    @y = data[:size][:y].to_i
   end
 
   def create_sheet(sym=nil)

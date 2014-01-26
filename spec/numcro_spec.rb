@@ -38,6 +38,18 @@ EOS
     @numcro.y = Y
   end
 
+  describe "load" do
+    before :each do
+      @numcro = NumberCross.new
+    end
+
+    it "サイズを取得する" do
+      expect{@numcro.load("sample.yml")}.to_not raise_error
+      expect(@numcro.x).to eq X
+      expect(@numcro.y).to eq Y
+    end
+  end
+
   describe "integer?" do
     it "数値以外の場合例外を投げる" do
       expect{@zero.send(:integer?, :a)}.to raise_error(TypeError)
