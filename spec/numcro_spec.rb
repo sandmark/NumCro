@@ -38,8 +38,48 @@ EOS
     @numcro.y = Y
   end
 
+  describe "save" do
+    before :all do
+      FILE = current_dir("output.yml")
+      SAVE_X = 5
+      SAVE_Y = 5
+      ANS_LEN = 5
+      ANS_NUM = "1.2.3.4.5"
+    end
+
+    before :each do
+      @numcro = NumberCross.new
+      @numcro.x = SAVE_X
+      @numcro.y = SAVE_Y
+      @numcro.answer_length = ANS_LEN
+      @numcro.answer_numbers = ANS_NUM
+    end
+
+    after :each do
+      if File.exists? FILE
+        FileUtils.rm FILE
+      end
+    end
+
+    it "ファイルは上書きしない", focus: true do
+      file = current_dir("test.yml")
+      File.open(file, "w"){ |f| f.write ""}
+      @numcro.save(file)
+      expect(File.read(file)).to be_blank
+      FileUtils.rm(file)
+    end
+
+    it "指定されたファイルに保存する" do
+      @numcro.save(FILE)
+      expect(File.exists?(FILE)).to be_true
+      FileUtils.rm FILE
+    end
+  end
+
   describe "load" do
     before :all do
+      LOAD_X = X
+      LOAD_Y = Y
       YML = "sample.yml"
       YML_QUESTION = <<EOS
 +--+--+--+--+--+
@@ -57,8 +97,8 @@ EOS
 
     it "サイズを取得する" do
       expect{@numcro.load(YML)}.to_not raise_error
-      expect(@numcro.x).to eq X
-      expect(@numcro.y).to eq Y
+      expect(@numcro.x).to eq LOAD_X
+      expect(@numcro.y).to eq LOAD_Y
     end
 
     it "答えの情報を取得する" do

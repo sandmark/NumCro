@@ -16,6 +16,17 @@ class NumberCross
     @sheet = nil
   end
 
+  def save(file)
+    if not File.exists? file
+      yml = {size: {x: @x, y: @y}}.to_yaml
+      yml+= {answer:
+        {length: @answer_length, numbers: @answer_numbers}}.to_yaml
+      File.open(file, "w") do |f|
+        f.write yml
+      end
+    end
+  end
+
   def load(file)
     data = HashWithIndifferentAccess.new(YAML.load_file(file))
     self.x = data[:size][:x].to_i
