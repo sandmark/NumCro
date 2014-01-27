@@ -16,13 +16,19 @@ class NumberCross
     @sheet = nil
   end
 
+  def to_yaml
+    yml = {size: {x: @x, y: @y}}.to_yaml
+    yml+= {answer:
+           {length: @answer_length,
+            numbers: @answer_numbers.join(".")}}.to_yaml
+    yml+= {numbers: @numbers}.to_yaml
+    yml.gsub(/---\n/, "")
+  end
+
   def save(file)
     if not File.exists? file
-      yml = {size: {x: @x, y: @y}}.to_yaml
-      yml+= {answer:
-        {length: @answer_length, numbers: @answer_numbers}}.to_yaml
       File.open(file, "w") do |f|
-        f.write yml
+        f.write self.to_yaml
       end
     end
   end

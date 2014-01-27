@@ -45,6 +45,7 @@ EOS
       SAVE_Y = 5
       ANS_LEN = 5
       ANS_NUM = "1.2.3.4.5"
+      SAVE_NUMBERS = {1=>"1", 2=>"2" ,3=>"3"}
     end
 
     before :each do
@@ -61,7 +62,35 @@ EOS
       end
     end
 
-    it "ファイルは上書きしない", focus: true do
+    it "answer_numbersを文字列で保存する" do
+      @numcro.save FILE
+      data = YAML.load_file FILE
+      expect(data[:answer][:numbers]).to be_kind_of(String)
+    end
+
+    it "問題を保存する" do
+      @numcro.save FILE
+      data = YAML.load_file FILE
+      expect(data.has_key? :question).to be_true
+    end
+
+    it "数値と文字の対(numbers)を保存する" do
+      @numcro.save FILE
+      data = YAML.load_file FILE
+      expect(data.has_key? :numbers).to be_true
+      data[:numbers].each do |number|
+        expect(SAVE_NUMBERS[number]).to eq SAVE_NUMBERS[number]
+      end
+    end
+
+    it "load で読み込める" do
+      @numcro.save FILE
+      @loaded = NumberCross.new
+      @loaded.load FILE
+      expect(@numcro == @loaded).to be_true
+    end
+
+    it "ファイルは上書きしない" do
       file = current_dir("test.yml")
       File.open(file, "w"){ |f| f.write ""}
       @numcro.save(file)
