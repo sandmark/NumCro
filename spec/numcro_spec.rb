@@ -8,6 +8,11 @@ describe "ナンクロ" do
     Y = 3
     OUT_OF_INDEX = 3
     InvalidSeq = "1.2.3.4.a.b.c"
+    QUESTION_TO_15 = <<EOS
+1.2.3.4.5
+6.7.8.9.10
+11.12.13.14.15
+EOS
     ONE_TO_FIVE = <<EOS
 +--+--+--+--+--+
 |01|02|03|04|05|
@@ -42,7 +47,7 @@ EOS
     before :all do
       FILE = current_dir("output.yml")
       SAVE_X = 5
-      SAVE_Y = 5
+      SAVE_Y = 3
       ANS_LEN = 5
       ANS_NUM = "1.2.3.4.5"
       SAVE_NUMBERS = {1=>"1", 2=>"2" ,3=>"3"}
@@ -54,11 +59,23 @@ EOS
       @numcro.y = SAVE_Y
       @numcro.answer_length = ANS_LEN
       @numcro.answer_numbers = ANS_NUM
+      @numcro.parse QUESTION_TO_15
+      SAVE_NUMBERS.each do |number, char|
+        @numcro.place number, char
+      end
     end
 
     after :each do
       if File.exists? FILE
         FileUtils.rm FILE
+      end
+    end
+
+
+    describe "serialize_question" do
+      it "@sheetを文字列に変換する" do
+        expect(@numcro.send(:serialize_question)).
+          to eq QUESTION_TO_15
       end
     end
 
@@ -78,6 +95,7 @@ EOS
       @numcro.save FILE
       data = YAML.load_file FILE
       expect(data.has_key? :numbers).to be_true
+      expect(data[:numbers].size).to eq SAVE_NUMBERS.size
       data[:numbers].each do |number|
         expect(SAVE_NUMBERS[number]).to eq SAVE_NUMBERS[number]
       end
@@ -228,11 +246,7 @@ EOS
 
     describe "place" do
       before :each do
-        @numcro.parse <<EOS
-1.2.3.4.5
-6.7.8.9.10
-11.12.13.14.15
-EOS
+        @numcro.parse QUESTION_TO_15
       end
 
       it "数字に文字を関連付ける" do

@@ -22,7 +22,12 @@ class NumberCross
            {length: @answer_length,
             numbers: @answer_numbers.join(".")}}.to_yaml
     yml+= {numbers: @numbers}.to_yaml
+    yml+= {question: serialize_question}.to_yaml
     yml.gsub(/---\n/, "")
+  end
+
+  def serialize_question
+    @sheet.map{|y| y.join(".")}.join("\n") + "\n"
   end
 
   def save(file)
@@ -66,7 +71,7 @@ class NumberCross
     if not s.size == 1
       raise RuntimeError, "#{s} must be one character."
     elsif not @sheet.flatten.include?(n)
-      raise IndexError, "#{n} is not a member of numbers."
+      raise IndexError, "#{n} doesn't exist in the question."
     end
     @numbers[n] = s
   end
@@ -155,5 +160,5 @@ class NumberCross
   end
 
   private :hr, :parse_line, :create_sheet, :size_zero?, :integer?
-  private :split_indices
+  private :split_indices, :serialize_question
 end
