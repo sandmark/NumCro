@@ -8,6 +8,11 @@ describe "ナンクロ" do
     Y = 3
     OUT_OF_INDEX = 3
     InvalidSeq = "1.2.3.4.a.b.c"
+    QUESTION_TO_15 = <<EOS
+1.2.3.4.5
+6.7.8.9.10
+11.12.13.14.15
+EOS
     ONE_TO_FIVE = <<EOS
 +--+--+--+--+--+
 |01|02|03|04|05|
@@ -38,8 +43,90 @@ EOS
     @numcro.y = Y
   end
 
+  describe "save" do
+    before :all do
+      FILE = current_dir("output.yml")
+      SAVE_X = 5
+      SAVE_Y = 3
+      ANS_LEN = 5
+      ANS_NUM = "1.2.3.4.5"
+      SAVE_NUMBERS = {1=>"1", 2=>"2" ,3=>"3"}
+    end
+
+    before :each do
+      @numcro = NumberCross.new
+      @numcro.x = SAVE_X
+      @numcro.y = SAVE_Y
+      @numcro.answer_length = ANS_LEN
+      @numcro.answer_numbers = ANS_NUM
+      @numcro.parse QUESTION_TO_15
+      SAVE_NUMBERS.each do |number, char|
+        @numcro.place number, char
+      end
+    end
+
+    after :each do
+      if File.exists? FILE
+        FileUtils.rm FILE
+      end
+    end
+
+
+    describe "serialize_question" do
+      it "@sheetを文字列に変換する" do
+        expect(@numcro.send(:serialize_question)).
+          to eq QUESTION_TO_15
+      end
+    end
+
+    it "answer_numbersを文字列で保存する" do
+      @numcro.save FILE
+      data = YAML.load_file FILE
+      expect(data[:answer][:numbers]).to be_kind_of(String)
+    end
+
+    it "問題を保存する" do
+      @numcro.save FILE
+      data = YAML.load_file FILE
+      expect(data.has_key? :question).to be_true
+    end
+
+    it "数値と文字の対(numbers)を保存する" do
+      @numcro.save FILE
+      data = YAML.load_file FILE
+      expect(data.has_key? :numbers).to be_true
+      expect(data[:numbers].size).to eq SAVE_NUMBERS.size
+      data[:numbers].each do |number|
+        expect(SAVE_NUMBERS[number]).to eq SAVE_NUMBERS[number]
+      end
+    end
+
+    it "load で読み込める" do
+      @numcro.save FILE
+      @loaded = NumberCross.new
+      @loaded.load FILE
+      expect(@numcro == @loaded).to be_true
+    end
+
+    it "ファイルは上書きしない" do
+      file = current_dir("test.yml")
+      File.open(file, "w"){ |f| f.write ""}
+      @numcro.save(file)
+      expect(File.read(file)).to be_blank
+      FileUtils.rm(file)
+    end
+
+    it "指定されたファイルに保存する" do
+      @numcro.save(FILE)
+      expect(File.exists?(FILE)).to be_true
+      FileUtils.rm FILE
+    end
+  end
+
   describe "load" do
     before :all do
+      LOAD_X = X
+      LOAD_Y = Y
       YML = "sample.yml"
       YML_QUESTION = <<EOS
 +--+--+--+--+--+
@@ -57,8 +144,8 @@ EOS
 
     it "サイズを取得する" do
       expect{@numcro.load(YML)}.to_not raise_error
-      expect(@numcro.x).to eq X
-      expect(@numcro.y).to eq Y
+      expect(@numcro.x).to eq LOAD_X
+      expect(@numcro.y).to eq LOAD_Y
     end
 
     it "答えの情報を取得する" do
@@ -159,11 +246,7 @@ EOS
 
     describe "place" do
       before :each do
-        @numcro.parse <<EOS
-1.2.3.4.5
-6.7.8.9.10
-11.12.13.14.15
-EOS
+        @numcro.parse QUESTION_TO_15
       end
 
       it "数字に文字を関連付ける" do

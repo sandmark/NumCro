@@ -7,6 +7,8 @@ class InvalidFormatError < Exception; end
 
 class NumberCross
   attr_accessor :x, :y, :answer_length, :answer_numbers
+  attr_reader   :sheet, :numbers
+
   def initialize
     @x = nil
     @y = nil
@@ -16,6 +18,28 @@ class NumberCross
     @sheet = nil
   end
 
+  def to_yaml
+    yml = {size: {x: @x, y: @y}}.to_yaml
+    yml+= {answer:
+           {length: @answer_length,
+            numbers: @answer_numbers.join(".")}}.to_yaml
+    yml+= {numbers: @numbers}.to_yaml
+    yml+= {question: serialize_question}.to_yaml
+    yml.gsub(/---\n/, "")
+  end
+
+  def serialize_question
+    @sheet.map{|y| y.join(".")}.join("\n") + "\n"
+  end
+
+  def save(file)
+    if not File.exists? file
+      File.open(file, "w") do |f|
+        f.write self.to_yaml
+      end
+    end
+  end
+
   def load(file)
     data = HashWithIndifferentAccess.new(YAML.load_file(file))
     self.x = data[:size][:x].to_i
@@ -23,6 +47,19 @@ class NumberCross
     self.answer_length = data[:answer][:length].to_i
     self.answer_numbers = data[:answer][:numbers]
     parse data[:question]
+  end
+
+  def == obj
+    if not obj.kind_of? self.class
+      false
+    else
+      @answer_length == obj.answer_length and
+        @answer_numbers == obj.answer_numbers and
+        @sheet == obj.sheet and
+        @numbers == obj.numbers and
+        @x == obj.x and
+        @y == obj.y
+    end
   end
 
   def create_sheet(sym=nil)
@@ -49,7 +86,7 @@ class NumberCross
     if not s.size == 1
       raise RuntimeError, "#{s} must be one character."
     elsif not @sheet.flatten.include?(n)
-      raise IndexError, "#{n} is not a member of numbers."
+      raise IndexError, "#{n} doesn't exist in the question."
     end
     @numbers[n] = s
   end
@@ -138,5 +175,5 @@ class NumberCross
   end
 
   private :hr, :parse_line, :create_sheet, :size_zero?, :integer?
-  private :split_indices
+  private :split_indices, :serialize_question
 end
