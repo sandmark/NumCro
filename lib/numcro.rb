@@ -7,6 +7,8 @@ class InvalidFormatError < Exception; end
 
 class NumberCross
   attr_accessor :x, :y, :answer_length, :answer_numbers
+  attr_reader   :sheet, :numbers
+
   def initialize
     @x = nil
     @y = nil
@@ -45,6 +47,19 @@ class NumberCross
     self.answer_length = data[:answer][:length].to_i
     self.answer_numbers = data[:answer][:numbers]
     parse data[:question]
+  end
+
+  def == obj
+    if not obj.kind_of? self.class
+      false
+    else
+      @answer_length == obj.answer_length and
+        @answer_numbers == obj.answer_numbers and
+        @sheet == obj.sheet and
+        @numbers == obj.numbers and
+        @x == obj.x and
+        @y == obj.y
+    end
   end
 
   def create_sheet(sym=nil)
