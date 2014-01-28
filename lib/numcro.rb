@@ -46,6 +46,7 @@ class NumberCross
     self.y = data[:size][:y].to_i
     self.answer_length = data[:answer][:length].to_i
     self.answer_numbers = data[:answer][:numbers]
+    @numbers = data[:numbers] || Hash.new(0)
     parse data[:question]
   end
 
