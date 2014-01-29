@@ -123,6 +123,12 @@ EOS
     end
   end
 
+  describe "==" do
+    it "他のクラスと比較された場合 false を返す" do
+      expect(@numcro == nil).to be_false
+    end
+  end
+
   describe "load" do
     before :all do
       LOAD_X = X
