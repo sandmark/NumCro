@@ -4,6 +4,7 @@ require "active_support/core_ext"
 require "yaml"
 
 class InvalidFormatError < Exception; end
+class NotUniquenessError < Exception; end
 
 class NumberCross
   attr_accessor :x, :y, :answer_length, :answer_numbers
@@ -87,14 +88,25 @@ class NumberCross
     lines.split(/\n/).each.with_index{|line,i| parse_line(i, line)}
   end
 
+  def clear val
+    @numbers.each do |k, v|
+      @numbers[k] = nil if v == val
+    end
+  end
+
   def place(n, s)
     n = n.to_i
     if not s.size == 1
       raise RuntimeError, "#{s} must be one character."
     elsif not @sheet.flatten.include?(n)
       raise IndexError, "#{n} doesn't exist in the question."
+    elsif @numbers.has_value? s
+      raise NotUniquenessError, "#{s} is already registered as a member."
+    elsif s == "*"
+      @numbers.delete(n)
+    else
+      @numbers[n] = s
     end
-    @numbers[n] = s
   end
 
   def x=(n)
