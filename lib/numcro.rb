@@ -84,6 +84,7 @@ class NumberCross
   end
 
   def place(n, s)
+    n = n.to_i
     if not s.size == 1
       raise RuntimeError, "#{s} must be one character."
     elsif not @sheet.flatten.include?(n)

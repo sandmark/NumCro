@@ -255,6 +255,11 @@ EOS
         @numcro.parse QUESTION_TO_15
       end
 
+      it "第一引数を自動的に整数にする" do
+        @numcro.place "1", "あ"
+        expect(@numbers[1]).to eq "あ"
+      end
+
       it "数字に文字を関連付ける" do
         @numcro.place(1, "あ")
         expect(@numbers[1]).to eq "あ"
