@@ -262,11 +262,11 @@ EOS
 
     describe "clear" do
       before(:each) { @numcro.parse QUESTION_TO_15 }
-      it "指定された値をnilに置き換える" do
+      it "指定された値を削除する" do
         @numcro.place 1, "a"
         expect(@numcro.numbers[1]).to eq "a"
         @numcro.clear "a"
-        expect(@numcro.numbers[1]).to eq nil
+        expect(@numcro.numbers.has_key? 1).to be_false
       end
     end
 

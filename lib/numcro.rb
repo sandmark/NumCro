@@ -90,7 +90,7 @@ class NumberCross
 
   def clear val
     @numbers.each do |k, v|
-      @numbers[k] = nil if v == val
+      @numbers.delete k if v == val
     end
   end
 
