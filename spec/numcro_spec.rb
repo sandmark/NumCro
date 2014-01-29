@@ -71,6 +71,16 @@ EOS
       end
     end
 
+    describe "save!" do
+      it "ファイルを上書きする" do
+        File.open(FILE, "w"){ |f| f.write ""}
+        char = "あ"
+        @numcro.place 1, char
+        @numcro.save!(FILE)
+        data = YAML.load_file(FILE)
+        expect(data[:numbers][1]).to eq char
+      end
+    end
 
     describe "serialize_question" do
       it "@sheetを文字列に変換する" do
@@ -250,9 +260,30 @@ EOS
       end
     end
 
+    describe "clear" do
+      before(:each) { @numcro.parse QUESTION_TO_15 }
+      it "指定された値を削除する" do
+        @numcro.place 1, "a"
+        expect(@numcro.numbers[1]).to eq "a"
+        @numcro.clear "a"
+        expect(@numcro.numbers.has_key? 1).to be_false
+      end
+    end
+
     describe "place" do
       before :each do
         @numcro.parse QUESTION_TO_15
+      end
+
+      it "関連付けられる文字はユニークである" do
+        char = "a"
+        @numcro.place 1, char
+        expect{@numcro.place(2, char)}.to raise_error(NotUniquenessError)
+      end
+
+      it "第一引数を自動的に整数にする" do
+        @numcro.place "1", "あ"
+        expect(@numbers[1]).to eq "あ"
       end
 
       it "数字に文字を関連付ける" do
@@ -279,6 +310,13 @@ EOS
       it "文字は一文字でなければならない" do
         expect{@numcro.place(1,"あい")}.to raise_error
         expect{@numcro.place(1,"")}.to raise_error
+      end
+
+      it "*が入力された場合、その数値を削除する" do
+        @numcro.place 1, "あ"
+        expect(@numcro.numbers[1]).to eq "あ"
+        @numcro.place 1, "*"
+        expect(@numcro.numbers.has_key?(1)).to be_false
       end
     end
 
