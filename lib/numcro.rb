@@ -32,6 +32,10 @@ class NumberCross
     @sheet.map{|y| y.join(".")}.join("\n") + "\n"
   end
 
+  def save!(file)
+    File.open(file, "w"){ |f| f.write self.to_yaml }
+  end
+
   def save(file)
     if not File.exists? file
       File.open(file, "w") do |f|

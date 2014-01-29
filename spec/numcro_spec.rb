@@ -71,6 +71,16 @@ EOS
       end
     end
 
+    describe "save!" do
+      it "ファイルを上書きする" do
+        File.open(FILE, "w"){ |f| f.write ""}
+        char = "あ"
+        @numcro.place 1, char
+        @numcro.save!(FILE)
+        data = YAML.load_file(FILE)
+        expect(data[:numbers][1]).to eq char
+      end
+    end
 
     describe "serialize_question" do
       it "@sheetを文字列に変換する" do
